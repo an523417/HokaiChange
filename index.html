@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>奇美拉交換所</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <!-- Background Mascots -->
+    <img
+        src="./images/chimera-right.png"
+        class="mascot mascot-left"
+        alt=""
+    >
+
+    <img
+        src="./images/chimera-left.png"
+        class="mascot mascot-right"
+        alt=""
+    >
+    <!-- Top Header -->
+    <header class="top-header">
+
+        <div class="brand-area">
+            <img
+                src="./images/header-chimera.png"
+                class="header-chimera"
+                alt="奇美拉"
+            >
+
+            <div class="brand-text">
+                <span class="brand-en">CHIMERA EXCHANGE</span>
+                <span class="brand-name">奇美拉交換所</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button
+                id="rulesButton"
+                class="header-rule-button"
+                type="button"
+            >
+                交換規則
+            </button>
+
+            <button
+                id="publishButton"
+                class="header-publish-button"
+            >
+                ＋發布
+            </button>
+        </div>
+
+    </header>
+
+    <main class="exchange-page">
+
+        <!-- Page Header -->
+        <section class="exchange-header">
+            <p class="english-title">CHIMERA EXCHANGE</p>
+            <h1>交換所</h1>
+            <p class="subtitle">尋找你想交換的星際萌寵。</p>
+        </section>
+
+        <!-- Navigation / Filter -->
+        <section class="exchange-toolbar">
+
+            <nav class="category-tabs">
+                <div class="exchange-tabs">
+
+                    <button
+                        class="exchange-tab active"
+                        data-type="all"
+                        type="button"
+                    >
+                        全部消息
+                    </button>
+
+                    <button
+                        class="exchange-tab"
+                        data-type="chimera"
+                        type="button"
+                    >
+                        奇美拉
+                    </button>
+
+                    <button
+                        class="exchange-tab"
+                        data-type="cat"
+                        type="button"
+                    >
+                        貓貓狸
+                    </button>
+
+                </div>
+            </nav>
+
+            <div class="filter-wrapper">
+
+                <button
+                    id="filterButton"
+                    class="filter-button"
+                    type="button"
+                >
+                    篩選
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- =========================
+            Search Filter Modal
+        ========================= -->
+        <div id="filterModal" class="modal-overlay">
+
+            <section class="filter-modal">
+
+                <span class="modal-star star-pink">★</span>
+                <span class="modal-star star-blue">✦</span>
+                <!-- Filter Decoration -->
+                <img
+                    src="./images/filter-chimera-top.png"
+                    class="filter-chimera filter-chimera-top"
+                    alt=""
+                >
+
+                <img
+                    src="./images/filter-chimera-bottom.png"
+                    class="filter-chimera filter-chimera-bottom"
+                    alt=""
+                >
+
+                <div class="modal-header">
+
+                    <div>
+                        <p class="modal-en-title">SEARCH EXCHANGE</p>
+                        <h2>篩選交換</h2>
+                        <p>選擇條件，尋找符合需求的交換消息。</p>
+                    </div>
+
+                     <button
+                        id="closeFilterModal"
+                        class="modal-close"
+                        type="button"
+                        aria-label="關閉"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <!-- Server -->
+                <div class="filter-section">
+
+                    <h3>伺服器</h3>
+
+                    <div class="filter-choice-row">
+
+                        <label class="filter-choice">
+                            <input
+                                type="radio"
+                                name="filterServer"
+                                value="all"
+                                checked
+                            >
+                            <span>全部</span>
+                        </label>
+
+                        <label class="filter-choice">
+                            <input
+                                type="radio"
+                                name="filterServer"
+                                value="asia"
+                            >
+                            <span>Asia</span>
+                        </label>
+
+                        <label class="filter-choice">
+                            <input
+                                type="radio"
+                                name="filterServer"
+                                value="tw-hk-mo"
+                            >
+                            <span>TW / HK / MO</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Type / Collection -->
+                <div class="filter-form-row">
+
+                    <div class="filter-field">
+
+                        <label for="filterPetType">
+                             種類
+                        </label>
+
+                        <select id="filterPetType">
+                            <option value="all">全部種類</option>
+                            <option value="chimera">奇美拉</option>
+                            <option value="cat">貓貓狸</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="filterCollection">
+                            款式
+                        </label>
+
+                        <select id="filterCollection">
+                            <option value="all">全部款式</option>
+                            <option value="classic">普通款</option>
+                            <option value="special">珍藏款</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Pets -->
+                 <div class="filter-exchange-section">
+
+                    <div class="section-title">
+                        <span></span>
+                        <h3>指定萌寵</h3>
+                        <span></span>
+                    </div>
+
+
+                    <div class="filter-pet-row">
+
+                        <!-- Owned -->
+                        <div class="filter-pet-field">
+
+                            <label for="filterOwnedPet">
+                            我有
+                            </label>
+
+                            <select id="filterOwnedPet">
+                                <option value="">
+                                    不限
+                                </option>
+                            </select>
+
+                            <div
+                                id="filterOwnedPreview"
+                                class="pet-preview"
+                            >
+                                選擇後顯示圖片
+                            </div>
+
+                        </div>
+
+
+                        <div class="filter-exchange-arrow">
+                            ⇄
+                        </div>
+
+
+                        <!-- Wanted -->
+                        <div class="filter-pet-field">
+
+                            <label for="filterWantedPet">
+                                我想換
+                            </label>
+
+                            <select id="filterWantedPet">
+                                <option value="">
+                                    不限
+                                </option>
+                            </select>
+
+                            <div
+                                id="filterWantedPreview"
+                                class="pet-preview"
+                            >
+                                選擇後顯示圖片
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                    <!-- Actions -->
+                <div class="filter-actions">
+
+                    <button
+                        id="clearFilterButton"
+                        class="cancel-button"
+                        type="button"
+                    >
+                        清空選項
+                    </button>
+
+                    <button
+                        id="applyFilterButton"
+                        class="submit-button"
+                        type="button"
+                    >
+                        確定搜尋
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div
+            id="exchangeList"
+            class="exchange-list"
+        >
+        </div>
+
+    </main>
+    <div id="rulesModal" class="modal-overlay">
+
+        <section class="rules-modal">
+            <!-- Decoration Chimera -->
+            <img
+                src="./images/rules-chimera-top.png"
+                class="rules-chimera rules-chimera-top"
+                alt=""
+            >
+
+            <img
+                src="./images/rules-chimera-bottom.png"
+                class="rules-chimera rules-chimera-bottom"
+                alt=""
+            >
+            <button
+                id="closeRulesModal"
+                class="modal-close"
+                type="button"
+            >
+                ×
+            </button>
+
+            <div class="rules-heading">
+                <span class="rules-en">✦ EXCHANGE GUIDE ✦</span>
+                <h2>交換小規則</h2>
+                <p>讓萌寵找到新的朋友吧！</p>
+            </div>
+
+            <div class="rules-list">
+
+                <div class="rule-item">
+                    <span class="rule-number">01</span>
+                    <div>
+                        <strong>發布交換</strong>
+                        <p>
+                            點擊「＋發布」，填寫你擁有的萌寵
+                            與想交換的萌寵。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <span class="rule-number">02</span>
+                    <div>
+                        <strong>尋找交換對象</strong>
+                        <p>
+                            使用萌寵類型與伺服器篩選，
+                            找到適合的交換對象。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <span class="rule-number">03</span>
+                    <div>
+                        <strong>最新消息優先</strong>
+                        <p>
+                            交換消息依發布時間排序，
+                            最新發布的消息會顯示在最上方。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <span class="rule-number">04</span>
+                    <div>
+                        <strong>48 小時有效</strong>
+                        <p>
+                            每則交換消息保留 2 天，
+                            超過 48 小時後會自動失效。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="rules-warning">
+                ★ 請勿在備註中公開密碼或其他敏感資訊
+            </div>
+
+            <button
+                id="confirmRules"
+                class="rules-confirm"
+                type="button"
+            >
+                我知道了！
+            </button>
+
+        </section>
+
+    </div>
+
+    <!-- =========================
+        Publish Exchange Modal
+    ========================= -->
+    <div id="publishModal" class="modal-overlay">
+
+        <section class="publish-modal">
+
+            <!-- Decoration -->
+            <span class="modal-star star-pink">★</span>
+            <span class="modal-star star-blue">✦</span>
+
+            <!-- Header -->
+            <div class="modal-header">
+
+                <div>
+                    <p class="modal-en-title">CHIMERA EXCHANGE</p>
+                    <h2>發布交換</h2>
+                    <p>填寫你的萌寵交換資訊，找到適合的交換對象。</p>
+                </div>
+
+                <button
+                    id="closePublishModal"
+                    class="modal-close"
+                    type="button"
+                    aria-label="關閉"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="publishForm" novalidate>
+
+                <!-- UID / Name -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="playerUid">
+                            UID <span class="required">*</span>
+                        </label>
+
+                        <input
+                            id="playerUid"
+                            type="text"
+                            inputmode="numeric"
+                            pattern="[0-9]+"
+                            maxlength="12"
+                            placeholder="請輸入遊戲 UID"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="playerName">
+                            玩家名稱 <span class="required">*</span>
+                        </label>
+
+                        <input
+                            id="playerName"
+                            type="text"
+                            placeholder="請輸入玩家名稱"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <!-- Server -->
+                <div class="form-group">
+
+                    <label for="server">
+                        伺服器 <span class="required">*</span>
+                    </label>
+
+                    <select id="server" required>
+                        <option value="">請選擇伺服器</option>
+                        <option value="asia">亞洲服</option>
+                        <option value="tw-hk-mo">台港澳服</option>
+                    </select>
+
+                </div>
+
+
+                <!-- Type / Collection -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="petType">
+                            類型 <span class="required">*</span>
+                        </label>
+
+                        <select id="petType" required>
+                            <option value="" selected disabled>請選擇類型</option>
+                            <option value="chimera">奇美拉</option>
+                            <option value="cat">貓貓狸</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="petCollection">
+                            款式 <span class="required">*</span>
+                        </label>
+
+                        <select id="petCollection" required>
+                            <option value="" selected disabled>請選擇款式</option>
+                            <option value="classic">經典款</option>
+                            <option value="special">珍藏款</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Exchange -->
+                <div class="exchange-form-section">
+
+                    <div class="section-title">
+                        <span></span>
+                        <h3>交換萌寵</h3>
+                        <span></span>
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="ownedPet">
+                                我有 <span class="required">*</span>
+                            </label>
+
+                            <select id="ownedPet" required>
+                                <option value="">請先選擇類型與款式</option>
+                            </select>
+
+                            <div
+                                id="ownedPetPreview"
+                                class="pet-preview"
+                            >
+                                選擇後顯示圖片
+                            </div>
+
+                        </div>
+
+
+                        <div class="exchange-arrow">
+                            ⇄
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="wantedPet">
+                                我想要 <span class="required">*</span>
+                            </label>
+
+                            <select id="wantedPet" required>
+                                <option value="">請先選擇類型與款式</option>
+                            </select>
+
+                            <div
+                                id="wantedPetPreview"
+                                class="pet-preview"
+                            >
+                                選擇後顯示圖片
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Note -->
+                <div class="form-group">
+
+                    <label for="exchangeNote">
+                        備註 / 聯絡方式
+                        <span class="optional">（選填）</span>
+                    </label>
+
+                    <textarea
+                        id="exchangeNote"
+                        maxlength="150"
+                        placeholder="例如：加好友後請傳『交換奇美拉』，看到後會回覆～"
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Social Link -->
+                <div class="form-group">
+
+                    <label for="socialLink">
+                        社群聯絡
+                        <span class="optional">（選填）</span>
+                    </label>
+
+                    <input
+                        id="socialLink"
+                        type="url"
+                        placeholder="https://..."
+                    >
+
+                    <small>
+                        可填寫 Discord、X、Facebook 等公開聯絡頁面。
+                    </small>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="form-actions">
+
+                    <button
+                        id="cancelPublish"
+                        class="cancel-button"
+                        type="button"
+                    >
+                        取消
+                    </button>
+
+                    <button
+                        class="submit-button"
+                        type="submit"
+                    >
+                        發布交換
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+        <!-- =========================
+        Exchange Detail Modal
+        ========================= -->
+    <div id="exchangeDetailModal" class="modal-overlay">
+
+        <section class="exchange-detail-modal">
+
+            <span class="detail-star detail-star-pink">★</span>
+            <span class="detail-star detail-star-blue">✦</span>
+
+            <div class="detail-header">
+
+                <div>
+                    <p class="modal-en-title">EXCHANGE DETAIL</p>
+                    <h2 id="detailTitle">交換詳細資訊</h2>
+                </div>
+
+                <button
+                    id="closeExchangeDetail"
+                    class="modal-close"
+                    type="button"
+                    aria-label="關閉"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- Player -->
+            <div class="detail-player">
+
+                <div>
+                    <span class="detail-label">玩家名稱</span>
+                    <strong id="detailPlayerName"></strong>
+                </div>
+
+                <div>
+                    <span class="detail-label">UID</span>
+                    <strong id="detailUid"></strong>
+                </div>
+
+                <div>
+                    <span class="detail-label">伺服器</span>
+                    <strong id="detailServer"></strong>
+                </div>
+
+            </div>
+
+
+            <!-- Pets -->
+            <div class="detail-pets">
+
+                <div class="detail-pet">
+
+                    <span class="detail-pet-label">我有</span>
+
+                    <div class="detail-pet-image-box">
+                        <img
+                            id="detailOwnedImage"
+                            src=""
+                            alt=""
+                        >
+                    </div>
+
+                    <strong id="detailOwnedName"></strong>
+
+                </div>
+
+
+                <div class="detail-exchange-arrow">
+                    ⇄
+                </div>
+
+
+                <div class="detail-pet">
+
+                    <span class="detail-pet-label">我想要</span>
+
+                    <div class="detail-pet-image-box">
+                        <img
+                            id="detailWantedImage"
+                            src=""
+                            alt=""
+                        >
+                    </div>
+
+                    <strong id="detailWantedName"></strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Note -->
+            <div id="detailNoteSection" class="detail-section">
+
+                <span class="detail-label">備註 / 聯絡方式</span>
+
+                <p id="detailNote"></p>
+
+            </div>
+
+
+            <!-- Social -->
+            <div class="detail-actions">
+
+                <a
+                    id="detailSocialLink"
+                    class="detail-social-button"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    前往社群聯絡 ↗
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+    <!-- =========================
+    Message Modal
+    ========================= -->
+    <div id="messageModal" class="modal-overlay">
+
+        <section class="message-modal">
+
+            <span class="modal-star star-pink">★</span>
+            <span class="modal-star star-blue">✦</span>
+
+            <!-- 警告角色圖片 -->
+            <img
+                src="./images/message-chimera.png"
+                class="message-chimera"
+                alt=""
+            >
+
+            <div class="message-content">
+
+                <div class="message-modal-icon">
+                    !
+                </div>
+
+                <div class="message-text-area">
+                    <h2 id="messageTitle">資料填寫有誤</h2>
+
+                    <p id="messageText">
+                        請確認填寫內容後再試一次。
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                id="closeMessageModal"
+                class="submit-button"
+                type="button"
+            >
+                我知道了
+            </button>
+
+        </section>
+
+    </div>
+
+   <script type="module" src="./js/main.js"></script>
+</body>
+</html>
