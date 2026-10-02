@@ -289,8 +289,30 @@ let currentPetType = "all";
 let currentServer = "all";
 let currentCollection = "all";
 
+// =========================
+// Pagination
+// =========================
+
+// 每頁最多顯示幾筆
+const ITEMS_PER_PAGE = 10;
+
+// 目前頁數
+let currentPage = 1;
+
+// 分頁元件
+const prevPageButton =
+    document.getElementById("prevPage");
+
+const nextPageButton =
+    document.getElementById("nextPage");
+
+const pageInfo =
+    document.getElementById("pageInfo");
+
 let currentOwnedPet = "";
 let currentWantedPet = "";
+let currentOwnedCollection = "";
+let currentWantedCollection = "";
 
 // =========================
 // Pet Select Elements
@@ -510,6 +532,7 @@ exchangeTabs.forEach(tab => {
         // 被點擊的加上 active
         tab.classList.add("active");
 
+        currentPage = 1;
 
         // 套用篩選
         applyFilters();
@@ -1042,6 +1065,11 @@ function renderExchange(exchange) {
     item.dataset.petType = exchange.petType;
     item.dataset.server = exchange.server;
 
+    // 給進階篩選使用
+    item.dataset.collection = exchange.collection;
+    item.dataset.ownedPetId = exchange.ownedPetId;
+    item.dataset.wantedPetId = exchange.wantedPetId;
+
     // 儲存真正的發布時間，提供排序使用
     item.dataset.createdAt =
         exchange.createdAt.getTime();
@@ -1228,12 +1256,20 @@ function getPetImagePath(pet) {
 
     return `./images/${collectionFolder}/${pet.type}/${pet.id}.png`;
 }
+
 function applyFilters() {
 
     const items =
-        document.querySelectorAll(".exchange-item");
+        Array.from(
+            document.querySelectorAll(".exchange-item")
+        );
 
-    items.forEach(item => {
+
+    // =========================
+    // 1. 先篩選
+    // =========================
+
+    const filteredItems = items.filter(item => {
 
         // -------------------------
         // 種類
@@ -1267,7 +1303,10 @@ function applyFilters() {
         // -------------------------
         const matchOwnedPet =
             !currentOwnedPet ||
-            item.dataset.wantedPetId === currentOwnedPet;
+            (
+                item.dataset.wantedPetId === currentOwnedPet &&
+                item.dataset.collection === currentOwnedCollection
+            );
 
 
         // -------------------------
@@ -1278,22 +1317,130 @@ function applyFilters() {
         // -------------------------
         const matchWantedPet =
             !currentWantedPet ||
-            item.dataset.ownedPetId === currentWantedPet;
+            (
+                item.dataset.ownedPetId === currentWantedPet &&
+                item.dataset.collection === currentWantedCollection
+            );
 
-
-        // 全部條件都符合才顯示
-        const isMatch =
+        return (
             matchPetType &&
             matchServer &&
             matchCollection &&
             matchOwnedPet &&
-            matchWantedPet;
-
-
-        item.style.display =
-            isMatch ? "" : "none";
+            matchWantedPet
+        );
     });
+
+
+    // =========================
+    // 2. 計算分頁
+    // =========================
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                filteredItems.length / ITEMS_PER_PAGE
+            )
+        );
+
+
+    // 避免頁數超過篩選後的總頁數
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+
+
+    const startIndex =
+        (currentPage - 1) * ITEMS_PER_PAGE;
+
+    const endIndex =
+        startIndex + ITEMS_PER_PAGE;
+
+
+    // =========================
+    // 3. 先全部隱藏
+    // =========================
+
+    items.forEach(item => {
+        item.style.display = "none";
+    });
+
+
+    // =========================
+    // 4. 只顯示目前這一頁
+    // =========================
+
+    filteredItems
+        .slice(startIndex, endIndex)
+        .forEach(item => {
+
+            item.style.display = "";
+
+        });
+
+
+    // =========================
+    // 5. 更新分頁 UI
+    // =========================
+
+    pageInfo.textContent =
+        `第 ${currentPage} / ${totalPages} 頁`;
+
+
+    prevPageButton.disabled =
+        currentPage === 1;
+
+
+    nextPageButton.disabled =
+        currentPage === totalPages;
+
+
+    const pagination =
+        document.getElementById("pagination");
+
+
+    pagination.style.display =
+        filteredItems.length <= ITEMS_PER_PAGE
+            ? "none"
+            : "flex";
 }
+// =========================
+// Pagination Buttons
+// =========================
+
+// 上一頁
+prevPageButton.addEventListener("click", function () {
+
+    if (currentPage > 1) {
+        currentPage--;
+
+        applyFilters();
+
+        // 回到交換列表上方
+        exchangeList.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+});
+
+
+// 下一頁
+nextPageButton.addEventListener("click", function () {
+
+    currentPage++;
+
+    applyFilters();
+
+    // 回到交換列表上方
+    exchangeList.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+});
 
 applyFilterButton.addEventListener(
     "click",
@@ -1321,15 +1468,43 @@ applyFilterButton.addEventListener(
             filterCollection.value;
 
 
+        // =========================
         // 我有
-        currentOwnedPet =
-            filterOwnedPet.value;
+        // =========================
+
+    currentOwnedPet =
+        filterOwnedPet.value;
+
+    const selectedOwnedOption =
+        filterOwnedPet.options[
+            filterOwnedPet.selectedIndex
+        ];
+
+    currentOwnedCollection =
+        currentOwnedPet
+            ? selectedOwnedOption.dataset.collection
+            : "";
 
 
-        // 我想換
-        currentWantedPet =
-            filterWantedPet.value;
+    // =========================
+    // 我想換
+    // =========================
 
+    currentWantedPet =
+        filterWantedPet.value;
+
+    const selectedWantedOption =
+        filterWantedPet.options[
+            filterWantedPet.selectedIndex
+        ];
+
+        currentWantedCollection =
+            currentWantedPet
+            ? selectedWantedOption.dataset.collection
+            : "";
+
+        // 每次重新搜尋，都從第一頁開始
+        currentPage = 1;
 
         // 執行搜尋
         applyFilters();
