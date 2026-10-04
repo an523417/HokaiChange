@@ -40,6 +40,16 @@
         </div>
 
         <div class="header-actions">
+
+            <button
+                id="updateLogButton"
+                class="header-update-button"
+                type="button"
+            >
+                <span class="update-new-dot" id="updateNewDot"></span>
+                    更新日誌
+            </button>
+
             <button
                 id="rulesButton"
                 class="header-rule-button"
@@ -355,6 +365,136 @@
         </div>
 
     </main>
+
+    <!-- =========================
+        Update Log Modal
+    ========================= -->
+    <div id="updateLogModal" class="modal-overlay">
+
+        <section class="update-log-modal">
+
+            <!-- 左上角奇美拉 -->
+            <img
+                src="./images/update-chimera.png"
+                class="update-log-chimera"
+                alt=""
+            >
+            <span class="update-star update-star-yellow">✦</span>
+            <span class="update-star update-star-blue">★</span>
+
+            <button
+                id="closeUpdateLog"
+                class="modal-close update-log-close"
+                type="button"
+                aria-label="關閉"
+            >
+                ×
+            </button>
+
+
+            <div class="update-log-heading">
+
+                <span class="update-log-en">
+                    ✦ UPDATE LOG ✦
+                </span>
+
+                <h2>更新日誌</h2>
+
+                <p>
+                    奇美拉交換所最近新增的功能！
+                </p>
+
+            </div>
+
+
+            <div class="update-log-list">
+
+
+                <!-- 2026.10.04 -->
+                <article class="update-log-item">
+
+                    <div class="update-log-date">
+                        <span class="update-log-dot"></span>
+
+                        <time datetime="2026-10-04">
+                            2026.10.04
+                        </time>
+
+                        <span class="update-latest-tag">
+                        NEW
+                        </span>
+                    </div>
+
+                    <ul>
+                        <li>
+                            新增「多選」功能
+                        </li>
+
+                        <li>
+                            優化篩選功能，可支援多選交換資料
+                        </li>
+
+                        <li>
+                            多選萌寵改為圖片形式預覽
+                        </li>
+                    </ul>
+
+                </article>
+
+
+                <!-- 2026.10.02 -->
+                <article class="update-log-item">
+
+                    <div class="update-log-date">
+                        <span class="update-log-dot"></span>
+
+                        <time datetime="2026-10-02">
+                            2026.10.02
+                        </time>
+                    </div>
+
+                    <ul>
+                        <li>
+                            新增分頁功能
+                        </li>
+
+                        <li>
+                            每頁最多顯示 10 筆交換資料，
+                            方便瀏覽
+                        </li>
+                    </ul>
+
+                </article>
+
+            </div>
+
+
+            <div class="update-contact">
+
+                <div class="update-contact-text">
+                    <strong>發現問題了嗎？</strong>
+
+                    <span>
+                        任何問題都歡迎回報！
+                    </span>
+                </div>
+
+                <a
+                    class="update-contact-button"
+                    href="https://www.threads.com/@kaede_hs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    聯絡我 ↗
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
     <div id="rulesModal" class="modal-overlay">
 
         <section class="rules-modal">
@@ -578,23 +718,33 @@
                     </div>
 
 
-                    <div class="form-row">
+                    <div class="form-row pet-exchange-row">
 
-                        <div class="form-group">
+                        <!-- Owned Pets -->
+                        <div class="form-group owned-pets-group">
 
-                            <label for="ownedPet">
-                                我有 <span class="required">*</span>
-                            </label>
+                            <div class="pet-label-row">
 
-                            <select id="ownedPet" required>
-                                <option value="">請先選擇類型與款式</option>
-                            </select>
+                                <label>
+                                    我有 <span class="required">*</span>
+                                </label>
 
+                                <span class="owned-pet-count">
+                                    已選擇
+                                    <strong id="multiPetCount">0</strong>
+                                    / 4
+                                </span>
+
+                            </div>
+
+                            <!-- 直接顯示可多選的萌寵圖片 -->
                             <div
-                                id="ownedPetPreview"
-                                class="pet-preview"
+                                id="multiPetGrid"
+                                class="multi-pet-grid owned-pet-grid"
                             >
-                                選擇後顯示圖片
+                                <div class="owned-pet-placeholder">
+                                    請先選擇類型與款式
+                                </div>
                             </div>
 
                         </div>
@@ -605,7 +755,7 @@
                         </div>
 
 
-                        <div class="form-group">
+                        <div class="form-group wanted-pet-group">
 
                             <label for="wantedPet">
                                 我想要 <span class="required">*</span>

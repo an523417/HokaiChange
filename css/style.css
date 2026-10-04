@@ -776,6 +776,30 @@ body {
     font-size: 24px;
 }
 
+/* 發布交換：左側多選區較寬、右側想要區較窄 */
+.pet-exchange-row {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) 44px minmax(0, 2fr);
+    align-items: start;
+    gap: 12px;
+}
+
+.pet-exchange-row .owned-pets-group,
+.pet-exchange-row .wanted-pet-group {
+    width: 100%;
+    min-width: 0;
+}
+
+.pet-exchange-row .exchange-arrow {
+    width: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 55px;
+}
+
 
 /* =========================
    Pet Preview
@@ -863,32 +887,7 @@ body {
     font-weight: 700;
 }
 
-/* =========================
-   Mobile
-========================= */
 
-@media (max-width: 650px) {
-
-    .publish-modal {
-        padding: 32px 22px;
-    }
-
-    .form-row {
-        flex-direction: column;
-
-        gap: 0;
-    }
-
-    .form-group {
-        width: 100%;
-    }
-
-    .exchange-arrow {
-        margin: -5px auto 15px;
-
-        transform: rotate(90deg);
-    }
-}
 /* =========================
    Exchange List
 ========================= */
@@ -1058,7 +1057,7 @@ body {
 
 .detail-pets {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 
     gap: 24px;
@@ -1116,8 +1115,9 @@ body {
 }
 
 .detail-exchange-arrow {
-    color: #dca600;
+    align-self: center;
 
+    color: #dca600;
     font-size: 28px;
 }
 
@@ -1786,6 +1786,26 @@ body {
 
 @media (max-width: 650px) {
 
+     .publish-modal {
+        padding: 32px 22px;
+    }
+
+    .form-row {
+        flex-direction: column;
+
+        gap: 0;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .exchange-arrow {
+        margin: -5px auto 15px;
+
+        transform: rotate(90deg);
+    }
+
     .filter-modal {
         padding: 32px 22px;
     }
@@ -1814,6 +1834,19 @@ body {
 
     .filter-actions button {
         flex: 1;
+    }
+
+    .pet-exchange-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .pet-exchange-row .exchange-arrow {
+        width: auto;
+        margin: 0 auto 12px;
+
+        transform: rotate(90deg);
     }
 }
 /* =========================
@@ -1939,8 +1972,508 @@ body {
     user-select: none;
 }
 
+/* =========================
+   Filter Modal - Final
+========================= */
+
+#filterModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(45, 40, 28, 0.35);
+    backdrop-filter: blur(4px);
+}
+
+#filterModal.show {
+    display: flex;
+}
+
+.filter-modal {
+    position: relative;
+
+    width: min(700px, calc(100% - 32px));
+    max-height: 88vh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 38px 42px;
+
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #fffdf5 100%
+    );
+
+    border: 2px solid #f1d57a;
+    border-radius: 24px;
+
+    box-shadow:
+        0 20px 60px rgba(80, 61, 10, 0.18);
+}
+/* =========================
+   Pagination
+========================= */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    margin-top: 32px;
+}
+
+.page-button {
+    padding: 9px 16px;
+
+    border: 1px solid #e1d6ad;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #625b49;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.page-button:hover:not(:disabled) {
+    background: #fff4c8;
+    border-color: #e7c75f;
+}
+
+.page-button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.page-info {
+    color: #817865;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+/* =========================
+   多選萌寵
+========================= */
+
+.pet-field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.multi-pet-button {
+    border: 1px solid #e6c96e;
+    background: #fff8df;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.multi-pet-modal-content {
+    position: relative;
+
+    width: min(560px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+
+    padding: 28px;
+    box-sizing: border-box;
+
+    background: #fffdf7;
+    border: 1px solid #ead7a1;
+    border-radius: 20px;
+
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
+
+.multi-pet-header {
+    margin-bottom: 22px;
+}
+
+.multi-pet-header h2 {
+    margin: 4px 0 6px;
+}
+
+.multi-pet-header p {
+    margin: 0;
+}
+
+.multi-pet-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.multi-pet-filter-group > span {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.multi-pet-filter-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.multi-filter {
+    flex: 1;
+    padding: 9px 10px;
+    border: 1px solid #ead7a1;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.multi-filter.active {
+    background: #fff2b8;
+    border-color: #e7b928;
+    font-weight: 700;
+}
+
+.multi-pet-count {
+    margin-bottom: 12px;
+    text-align: right;
+    font-size: 14px;
+}
+
+.multi-pet-grid {
+    min-height: 180px;
+    border: 1px dashed #e4c975;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.multi-pet-placeholder {
+    text-align: center;
+    margin: 60px 0;
+}
+
+.multi-pet-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+/* 多選萌寵 Modal 背景 */
+#multiPetModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: rgba(0, 0, 0, 0.35);
+}
+
+/* 開啟多選 Modal */
+#multiPetModal.show {
+    display: flex;
+}
+
+.owned-pet-placeholder {
+    grid-column: 1 / -1;
+
+    min-height: 170px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: #b5a98e;
+    font-size: 14px;
+    line-height: 1.7;
+}
+/* =========================
+   持有萌寵圖片選擇區
+========================= */
+
+.multi-pet-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+
+    width: 100%;
+    padding: 14px;
+
+    border: 1px dashed #e9bd55;
+    border-radius: 18px;
+
+    box-sizing: border-box;
+}
+
+
+/* 卡片不要再固定 110px */
+.multi-pet-card {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 120px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+    padding: 9px 5px;
+
+    box-sizing: border-box;
+
+    background: #fffdf8;
+
+    border: 1px solid #e8c978;
+    border-radius: 15px;
+
+    cursor: pointer;
+}
+
+
+/* 圖片也稍微縮小 */
+.multi-pet-card img {
+    width: 72px;
+    height: 72px;
+
+    display: block;
+    flex-shrink: 0;
+
+    object-fit: cover;
+    border-radius: 7px;
+}
+
+
+.multi-pet-card-name {
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 13px;
+    line-height: 1.35;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* 所有圖片統一尺寸 */
+.multi-pet-card img {
+    width: 88px;
+    height: 88px;
+
+    display: block;
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+
+/* 所有名字統一 */
+.multi-pet-card-name {
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 14px;
+    line-height: 1.4;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.multi-pet-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 10px 6px;
+
+    background: #fffdf8;
+
+    border: 1px solid #e8c978;
+    border-radius: 14px;
+
+    cursor: pointer;
+}
+
+.multi-pet-card img {
+    width: 64px;
+    height: 64px;
+
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.multi-pet-card img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.multi-pet-card-name {
+    width: 100%;
+
+    font-size: 12px;
+    text-align: center;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* 被選中的卡片 */
+.multi-pet-card.selected {
+    background: #fff5c9;
+    border-color: #e8b522;
+}
+
+
+/* 右上角 ✓ */
+.multi-pet-check {
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+
+    display: none;
+
+    width: 21px;
+    height: 21px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f2bd24;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+/* 只有選中才出現 */
+.multi-pet-card.selected .multi-pet-check {
+    display: flex;
+}
+
+.multi-pet-confirm-button {
+    min-width: 110px;
+    padding: 12px 20px;
+
+    border: 1px solid #e8b522;
+    border-radius: 12px;
+
+    background: #fff0ad;
+
+    color: #3c321e;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.multi-pet-confirm-button:hover {
+    background: #ffe483;
+    transform: translateY(-1px);
+}
+.pet-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.pet-label-row label {
+    margin-bottom: 0;
+}
+
+
+/* 手機 */
 @media (max-width: 600px) {
-    
+
+    .update-log-chimera {
+        width: 90px;
+        height: 90px;
+
+        top: 18px;
+        left: 14px;
+    }
+
+    .update-log-close {
+        top: 16px;
+        right: 16px;
+    }
+
+    .header-update-button {
+        padding: 10px 12px;
+
+        font-size: 12px;
+    }
+
+    .update-log-modal {
+        padding:
+            34px
+            22px
+            26px;
+    }
+
+    .update-contact {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .update-contact-button {
+        justify-content: center;
+
+        display: flex;
+    }
+
+    .multi-pet-filters {
+        grid-template-columns: 1fr;
+    }
 
     #filterModal {
         padding: 8px;
@@ -2167,96 +2700,445 @@ body {
         right: -15px;
         top: -45px;
     }
+
+    .multi-pet-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}    /* 手機：持有萌寵改成兩個一排 */
+    .multi-pet-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+
+        padding: 10px;
+    }
+
+    .multi-pet-card {
+        width: 100%;
+        min-width: 0;
+        min-height: 105px;
+
+        padding: 8px 4px;
+    }
+
+    .multi-pet-card img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .multi-pet-card-name {
+        font-size: 12px;
+    }
+    .exchange-multi-hint {
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #a09682;
+    white-space: nowrap;
 }
 /* =========================
-   Filter Modal - Final
-========================= */
+   Detail Owned Pets Grid
+   ========================= */
 
-#filterModal {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
+.detail-owned-grid {
+    width: 200px;
+    height: 160px;
 
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    overflow: hidden;
+
+    border: 1px dashed #e7bd5c;
+    border-radius: 12px;
+
+    background: #fffaf0;
+}
+
+.detail-owned-grid-cell {
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+/* 中間分隔線 */
+.detail-owned-grid-cell:nth-child(1),
+.detail-owned-grid-cell:nth-child(3) {
+    border-right: 1px solid #ead7a5;
+}
+
+.detail-owned-grid-cell:nth-child(1),
+.detail-owned-grid-cell:nth-child(2) {
+    border-bottom: 1px solid #ead7a5;
+}
+
+/* 每張萌寵圖片塞進自己的格子 */
+.detail-owned-grid-cell img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+#detailOwnedName {
+    max-width: 260px;
+
+    margin-top: 14px;
+
+    text-align: center;
+    line-height: 1.7;
+
+    font-size: 14px;
+}
+.detail-owned-grid {
+    margin-top: 0px;
+}
+
+.detail-owned,
+.detail-wanted {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+/* Detail 左右萌寵對齊 */
+.detail-pet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* 「我有 / 我想要」標題高度固定 */
+.detail-pet-label {
+    display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 20px;
-
-    background: rgba(45, 40, 28, 0.35);
-    backdrop-filter: blur(4px);
+    min-height: 24px;
+    margin-bottom: 10px;
 }
+/* =========================
+   Update Log Button
+========================= */
 
-#filterModal.show {
-    display: flex;
-}
-
-.filter-modal {
+.header-update-button {
     position: relative;
 
-    width: min(700px, calc(100% - 32px));
-    max-height: 88vh;
+    padding: 10px 10px;
 
-    overflow-y: auto;
-    overflow-x: hidden;
+    border: 2px solid #2f2b25;
+    border-radius: 12px;
 
-    padding: 38px 42px;
+    background: #fffaf0;
+    color: #3c352b;
 
-    background: linear-gradient(
-        180deg,
-        #ffffff 0%,
-        #fffdf5 100%
-    );
-
-    border: 2px solid #f1d57a;
-    border-radius: 24px;
-
-    box-shadow:
-        0 20px 60px rgba(80, 61, 10, 0.18);
-}
-/* =========================
-   Pagination
-========================= */
-
-.pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 18px;
-
-    margin-top: 32px;
-}
-
-.page-button {
-    padding: 9px 16px;
-
-    border: 1px solid #e1d6ad;
-    border-radius: 9px;
-
-    background: #ffffff;
-    color: #625b49;
-
-    font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
 
     cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.page-button:hover:not(:disabled) {
-    background: #fff4c8;
-    border-color: #e7c75f;
+.header-update-button:hover {
+    transform: translateY(-2px);
+
+    background: #fff3c4;
+
+    box-shadow:
+        0 5px 14px rgba(80, 65, 30, 0.12);
 }
 
-.page-button:disabled {
-    opacity: 0.4;
-    cursor: default;
+
+/* 新更新小黃點 */
+
+.update-new-dot {
+    position: absolute;
+
+    top: -5px;
+    right: -5px;
+
+    width: 11px;
+    height: 11px;
+
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    background: #ffbd22;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.page-info {
-    color: #817865;
+
+/* =========================
+   Update Log Modal
+========================= */
+
+.update-log-modal {
+    position: relative;
+
+    width: min(560px, calc(100vw - 32px));
+    max-height: 82vh;
+
+    padding: 38px 42px 32px;
+
+    overflow-y: auto;
+
+    border-radius: 28px;
+
+    background: #fffdf8;
+
+    box-shadow:
+        0 22px 60px rgba(67, 55, 28, 0.18);
+
+    border: 1px solid #f1d98d;
+}
+
+
+/* =========================
+   Decoration
+========================= */
+
+.update-star {
+    position: absolute;
+
+    pointer-events: none;
+}
+
+.update-star-yellow {
+    top: 28px;
+    left: 30px;
+
+    color: #ffc433;
+
+    font-size: 24px;
+}
+
+.update-star-blue {
+    right: 70px;
+    top: 95px;
+
+    color: #8ed5f7;
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   Heading
+========================= */
+
+.update-log-heading {
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+.update-log-en {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #c78a00;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 3px;
+}
+
+.update-log-heading h2 {
+    margin: 0 0 8px;
+
+    color: #332e26;
+
+    font-size: 28px;
+}
+
+.update-log-heading p {
+    margin: 0;
+
+    color: #918675;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   Update List
+========================= */
+
+.update-log-list {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 24px;
+
+    padding-left: 8px;
+}
+
+.update-log-item {
+    position: relative;
+
+    padding: 20px 22px;
+
+    border: 1px solid #f1dfaa;
+    border-radius: 18px;
+
+    background: #fffaf0;
+}
+
+.update-log-date {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 12px;
+
+    color: #6c5730;
+
+    font-weight: 800;
+}
+
+.update-log-dot {
+    width: 9px;
+    height: 9px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #ffc536;
+}
+
+.update-latest-tag {
+    padding: 3px 7px;
+
+    border-radius: 999px;
+
+    background: #ffd65d;
+
+    color: #66501c;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.update-log-item ul {
+    margin: 0;
+
+    padding-left: 22px;
+
+    color: #655d50;
+
+    line-height: 1.9;
+
+    font-size: 14px;
+}
+
+.update-log-item li::marker {
+    color: #e5a91e;
+}
+
+
+/* =========================
+   Contact
+========================= */
+
+.update-contact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    margin-top: 30px;
+    padding-top: 22px;
+
+    border-top: 1px solid #ead9aa;
+}
+
+.update-contact-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    color: #6d6354;
+
+    font-size: 13px;
+}
+
+.update-contact-text strong {
+    color: #39332b;
+
+    font-size: 14px;
+}
+
+.update-contact-button {
+    flex-shrink: 0;
+
+    padding: 10px 17px;
+
+    border-radius: 12px;
+
+    background: #35322d;
+
+    color: #ffffff;
 
     font-size: 13px;
     font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.update-contact-button:hover {
+    transform: translateY(-2px);
+
+    background: #d39a18;
+}
+/* 更新日誌關閉按鈕 */
+.update-log-close {
+    position: absolute;
+
+    top: 20px;
+    right: 22px;
+    left: auto;
+
+    z-index: 10;
+}
+/* =========================
+   Update Log Chimera
+========================= */
+
+.update-log-chimera {
+    position: absolute;
+
+    top: 18px;
+    left: 22px;
+
+    width: 125px;
+    height: 125px;
+
+    object-fit: contain;
+
+    z-index: 2;
+
+    pointer-events: none;
 }

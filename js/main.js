@@ -309,6 +309,163 @@ const nextPageButton =
 const pageInfo =
     document.getElementById("pageInfo");
 
+// =========================
+// Multi Pet Select
+// =========================
+
+const multiPetGrid =
+    document.getElementById("multiPetGrid");
+
+const multiPetCount =
+    document.getElementById("multiPetCount");
+
+function getPetKey(pet) {
+
+    return `${pet.type}|${pet.collection}|${pet.id}`;
+}
+
+function renderMultiPetGrid() {
+
+    multiPetGrid.innerHTML = "";
+
+    const selectedType = petType.value;
+    const selectedCollection = petCollection.value;
+
+
+    // 還沒有選種類 / 款式
+    if (!selectedType || !selectedCollection) {
+
+        multiPetGrid.innerHTML = `
+            <div class="owned-pet-placeholder">
+                請先選擇類型與款式
+            </div>
+        `;
+
+        multiPetCount.textContent =
+            tempSelectedPets.length;
+
+        return;
+    }
+
+
+    // 找出目前種類 + 款式的萌寵
+    const filteredPets = pets.filter(pet =>
+        pet.type === selectedType &&
+        pet.collection === selectedCollection
+    );
+
+
+    filteredPets.forEach(pet => {
+
+        const petKey = getPetKey(pet);
+
+        const isSelected =
+            tempSelectedPets.some(
+                selectedPet =>
+                    getPetKey(selectedPet) === petKey
+            );
+
+
+        const card =
+            document.createElement("button");
+
+        card.type = "button";
+        card.className = "multi-pet-card";
+
+
+        if (isSelected) {
+            card.classList.add("selected");
+        }
+
+
+        card.innerHTML = `
+            <span class="multi-pet-check">✓</span>
+
+            <img
+                src="${getPetImagePath(pet)}"
+                alt="${pet.name}"
+            >
+
+            <span class="multi-pet-card-name">
+                ${pet.name}
+            </span>
+        `;
+
+
+        card.addEventListener("click", function () {
+            toggleMultiPet(pet);
+        });
+
+
+        multiPetGrid.appendChild(card);
+    });
+
+
+    multiPetCount.textContent =
+        tempSelectedPets.length;
+}
+
+function resetOwnedPetSelection() {
+
+    tempSelectedPets = [];
+
+    multiPetCount.textContent = "0";
+
+    renderMultiPetGrid();
+
+    updateWantedPetDisabled();
+}
+
+function toggleMultiPet(pet) {
+
+    const petKey = getPetKey(pet);
+
+    const selectedIndex =
+        tempSelectedPets.findIndex(
+            selectedPet =>
+                getPetKey(selectedPet) === petKey
+        );
+
+
+    // 已經選過 → 再點一次就是取消
+    if (selectedIndex !== -1) {
+
+        tempSelectedPets.splice(
+            selectedIndex,
+            1
+        );
+
+    } else {
+
+        // 最多只能選 4 隻
+        if (tempSelectedPets.length >= 4) {
+
+            showMessage(
+                "最多選擇 4 隻",
+                "一次最多可以選擇 4 隻持有萌寵。"
+            );
+
+            return;
+        }
+
+
+        tempSelectedPets.push(pet);
+    }
+
+
+    multiPetCount.textContent =
+        tempSelectedPets.length;
+
+
+    renderMultiPetGrid();
+
+    updateWantedPetDisabled();
+}
+
+// 暫時選擇的萌寵
+// 目前只存在前端，不會送 Firebase
+let tempSelectedPets = [];
+
 let currentOwnedPet = "";
 let currentWantedPet = "";
 let currentOwnedCollection = "";
@@ -321,10 +478,7 @@ let currentWantedCollection = "";
 const petType = document.getElementById("petType");
 const petCollection = document.getElementById("petCollection");
 
-const ownedPet = document.getElementById("ownedPet");
 const wantedPet = document.getElementById("wantedPet");
-const ownedPetPreview =
-    document.getElementById("ownedPetPreview");
 
 const wantedPetPreview =
     document.getElementById("wantedPetPreview");
@@ -438,6 +592,8 @@ function hideMessage() {
 
     messageModal.classList.remove("show");
 }
+
+
 
 
 closeMessageModal.addEventListener(
@@ -785,6 +941,97 @@ function syncFilterPetOptions(
 }
 
 // =========================
+// Update Log Modal
+// =========================
+
+const updateLogButton =
+    document.getElementById("updateLogButton");
+
+const updateLogModal =
+    document.getElementById("updateLogModal");
+
+const closeUpdateLog =
+    document.getElementById("closeUpdateLog");
+
+const updateNewDot =
+    document.getElementById("updateNewDot");
+
+
+// 目前最新版號
+const CURRENT_UPDATE_VERSION = "2026.10.04";
+
+
+// 開啟更新日誌
+function openUpdateLog() {
+
+    updateLogModal.classList.add("show");
+
+    // 記錄：使用者已經看過這次更新
+    localStorage.setItem(
+        "chimeraLastSeenUpdate",
+        CURRENT_UPDATE_VERSION
+    );
+
+    // 小黃點消失
+    if (updateNewDot) {
+        updateNewDot.style.display = "none";
+    }
+}
+
+
+// 關閉更新日誌
+function closeUpdateLogModal() {
+
+    updateLogModal.classList.remove("show");
+}
+
+
+// 點擊更新日
+updateLogButton.addEventListener(
+    "click",
+    openUpdateLog
+);
+
+
+// 點擊 X
+closeUpdateLog.addEventListener(
+    "click",
+    closeUpdateLogModal
+);
+
+
+// 點擊背景關閉
+updateLogModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === updateLogModal) {
+            closeUpdateLogModal();
+        }
+    }
+);
+
+
+// =========================
+// New Update Indicator
+// =========================
+
+const lastSeenUpdate =
+    localStorage.getItem(
+        "chimeraLastSeenUpdate"
+    );
+
+
+// 如果使用者已經看過最新版
+if (
+    lastSeenUpdate ===
+    CURRENT_UPDATE_VERSION
+) {
+
+    updateNewDot.style.display = "none";
+}
+
+// =========================
 // Prevent Same Filter Pet
 // =========================
 
@@ -952,6 +1199,124 @@ function openExchangeDetail(exchange) {
     detailOwnedName.textContent =
         ownedPetData.name;
 
+    // Detail Owned Pets
+
+
+    // 新版使用 ownedPetIds
+    // 舊版資料則自動退回 ownedPetId
+    const detailOwnedPetIds =
+        Array.isArray(exchange.ownedPetIds) &&
+        exchange.ownedPetIds.length > 0
+            ? exchange.ownedPetIds
+            : [exchange.ownedPetId].filter(Boolean);
+
+    // 把所有 ID 轉成萌寵資料
+    const detailOwnedPets =
+        detailOwnedPetIds
+            .map(petId =>
+                getPetById(
+                    petId,
+                    exchange.collection
+                )
+            )
+        .filter(Boolean);
+
+    console.log(
+        "Detail 我有：",
+        detailOwnedPets
+    );
+
+  
+    // Detail Owned Pets Display
+
+
+    if (detailOwnedPets.length > 1) {
+
+        // 多隻模式：隱藏原本單張圖片
+        detailOwnedImage.style.display = "none";
+
+        // 建立四宮格
+        let ownedGrid =
+            document.getElementById("detailOwnedGrid");
+
+        // 第一次開啟時才建立
+        if (!ownedGrid) {
+            ownedGrid = document.createElement("div");
+            ownedGrid.id = "detailOwnedGrid";
+            ownedGrid.className = "detail-owned-grid";
+
+            detailOwnedImage.parentElement.insertBefore(
+                ownedGrid,
+                detailOwnedImage
+            );
+        }
+
+        // 每次開公告前清空
+        ownedGrid.innerHTML = "";
+
+        // 固定建立 4 格
+        for (let i = 0; i < 4; i++) {
+
+            const cell =
+                document.createElement("div");
+
+            cell.className =
+                "detail-owned-grid-cell";
+
+            const pet = detailOwnedPets[i];
+
+            // 這一格有萌寵才放圖片
+            if (pet) {
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    getPetImagePath(pet);
+
+                img.alt =
+                    pet.name;
+
+                cell.appendChild(img);
+            }
+
+            ownedGrid.appendChild(cell);
+        }
+
+        // 名稱：每兩隻換一行
+        const nameRows = [];
+
+        for (
+            let i = 0;
+            i < detailOwnedPets.length;
+            i += 2
+        ) {
+            nameRows.push(
+                detailOwnedPets
+                .slice(i, i + 2)
+                .map(pet => pet.name)
+                .join("、")
+            );
+        }
+
+        detailOwnedName.innerHTML =
+            nameRows.join("<br>");
+
+    } else {
+
+        // 單隻模式：維持原本樣式
+        detailOwnedImage.style.display = "";
+
+        const ownedGrid =
+            document.getElementById("detailOwnedGrid");
+
+        if (ownedGrid) {
+            ownedGrid.remove();
+        }
+
+        detailOwnedName.textContent =
+            ownedPetData.name;
+    }  
+
 
     // 我想要
     detailWantedImage.src =
@@ -1054,6 +1419,12 @@ function renderExchange(exchange) {
             exchange.wantedPetId,
             exchange.collection
         );
+    
+    // 多隻交換提示
+    const multiPetHint =
+        exchange.ownedPetIds.length > 1
+            ? `（多隻換${wantedPetData?.name || ""}）`
+            : "";
 
     // 找不到萌寵資料就不要繼續
     if (!ownedPetData || !wantedPetData) {
@@ -1068,6 +1439,8 @@ function renderExchange(exchange) {
     // 給進階篩選使用
     item.dataset.collection = exchange.collection;
     item.dataset.ownedPetId = exchange.ownedPetId;
+    item.dataset.ownedPetIds =
+        JSON.stringify(exchange.ownedPetIds);
     item.dataset.wantedPetId = exchange.wantedPetId;
 
     // 儲存真正的發布時間，提供排序使用
@@ -1094,6 +1467,14 @@ function renderExchange(exchange) {
                     ${ownedPetData.name}
                     <span class="exchange-word">換</span>
                     ${wantedPetData.name}
+
+                    ${
+                        multiPetHint
+                            ? `<span class="exchange-multi-hint">
+                                ${multiPetHint}
+                                </span>`
+                            : ""
+                    }
                 </h3>
 
                 <div class="exchange-meta">
@@ -1166,7 +1547,8 @@ async function loadExchanges() {
 
         const exchangesQuery = query(
             collection(db, "exchanges"),
-            orderBy("createdAt", "desc")
+            where("expiresAt", ">", new Date()),
+            orderBy("expiresAt", "asc")
         );
 
         const querySnapshot =
@@ -1191,6 +1573,18 @@ async function loadExchanges() {
                 return;
             }
 
+            
+            // Owned Pets Compatibility
+
+
+            // 新資料有 ownedPetIds → 使用全部
+            // 舊資料只有 ownedPetId → 自動包成陣列
+            const ownedPetIds =
+                Array.isArray(data.ownedPetIds) &&
+                data.ownedPetIds.length > 0
+                ? data.ownedPetIds
+                : [data.ownedPetId].filter(Boolean);
+            
             const exchange = {
                 id: document.id,
 
@@ -1201,7 +1595,15 @@ async function loadExchanges() {
                 petType: data.petType,
                 collection: data.collection,
 
-                ownedPetId: data.ownedPetId,
+                // 舊版相容：保留第一隻
+                ownedPetId:
+                    data.ownedPetId ||
+                    ownedPetIds[0] ||
+                    "",
+
+                // 新版：完整的持有萌寵
+                ownedPetIds: ownedPetIds,
+
                 wantedPetId: data.wantedPetId,
 
                 note: data.note,
@@ -1315,10 +1717,18 @@ function applyFilters() {
         // 我想換 B
         // → 找「對方有 B」
         // -------------------------
+        // 取得對方全部「我有」萌寵
+        const ownedPetIds =
+            JSON.parse(
+                item.dataset.ownedPetIds || "[]"
+            );
+
+        // 我想換 B
+        // → 對方只要持有清單裡包含 B 就符合
         const matchWantedPet =
             !currentWantedPet ||
             (
-                item.dataset.ownedPetId === currentWantedPet &&
+                ownedPetIds.includes(currentWantedPet) &&
                 item.dataset.collection === currentWantedCollection
             );
 
@@ -1571,7 +1981,18 @@ function createExchange() {
         petType: petType.value,
         collection: petCollection.value,
 
-        ownedPetId: ownedPet.value,
+        // 第一隻保留給舊版相容使用
+        ownedPetId:
+            tempSelectedPets.length > 0
+            ? tempSelectedPets[0].id
+            : "",
+
+        // 新版：真正記錄全部「我有」萌寵
+        ownedPetIds:
+            tempSelectedPets.map(
+            pet => pet.id
+        ),
+
         wantedPetId: wantedPet.value,
 
         note: exchangeNote.value.trim(),
@@ -1612,9 +2033,28 @@ publishForm.addEventListener("submit", async function (event) {
 
         const exchange = createExchange();
 
+        // 至少選擇 1 隻持有萌寵
+        if (exchange.ownedPetIds.length === 0) {
+
+            showMessage(
+                "尚未選擇萌寵",
+                "請至少選擇 1 隻你擁有的萌寵。"
+            );
+
+            return;
+        }
+        if (exchange.ownedPetIds.length > 4) {
+
+            showMessage(
+                "選擇數量有誤",
+                "一次最多只能選擇 4 隻持有萌寵。"
+            );
+
+            return;
+        }
         // =========================
-// Form Validation
-// =========================
+        // Form Validation
+        // =========================
 
         // UID：9～10 位數字
             if (!/^\d{9,10}$/.test(exchange.uid)) {
@@ -1706,6 +2146,7 @@ publishForm.addEventListener("submit", async function (event) {
             collection: exchange.collection,
 
             ownedPetId: exchange.ownedPetId,
+            ownedPetIds: exchange.ownedPetIds,
             wantedPetId: exchange.wantedPetId,
 
             note: exchange.note,
@@ -1718,6 +2159,11 @@ publishForm.addEventListener("submit", async function (event) {
 
             authorUid: auth.currentUser.uid
         };
+
+        console.log(
+            "準備送往 Firestore：",
+            firestoreExchange
+        );
 
         const docRef = await addDoc(
             collection(db, "exchanges"),
@@ -1787,50 +2233,54 @@ function updatePetOptions() {
     const selectedType = petType.value;
     const selectedCollection = petCollection.value;
 
-    // 尚未選完整
+
+    wantedPet.innerHTML =
+        '<option value="">請選擇你想要的萌寵</option>';
+
+
     if (!selectedType || !selectedCollection) {
 
-        ownedPet.innerHTML =
-            '<option value="">請先選擇類型與款式</option>';
+        renderMultiPetGrid();
 
-        wantedPet.innerHTML =
-            '<option value="">請先選擇類型與款式</option>';
+        showPetPreview(
+            wantedPetPreview,
+            ""
+        );
 
         return;
     }
 
-    // 找出符合目前條件的萌寵
+
     const filteredPets = pets.filter(pet =>
         pet.type === selectedType &&
         pet.collection === selectedCollection
     );
 
-    // 重設選單
-    ownedPet.innerHTML =
-        '<option value="">請選擇你擁有的萌寵</option>';
 
-    wantedPet.innerHTML =
-        '<option value="">請選擇你想要的萌寵</option>';
-
-        showPetPreview(ownedPetPreview, "");
-        showPetPreview(wantedPetPreview, "");
-
-    // 將萌寵加入兩個下拉選單
     filteredPets.forEach(pet => {
 
-        const ownedOption = document.createElement("option");
-        ownedOption.value = pet.id;
-        ownedOption.textContent = pet.name;
-        ownedOption.dataset.type = pet.type;
-        ownedOption.dataset.collection = pet.collection;
+        const wantedOption =
+            document.createElement("option");
 
-        const wantedOption = document.createElement("option");
         wantedOption.value = pet.id;
         wantedOption.textContent = pet.name;
 
-        ownedPet.appendChild(ownedOption);
-        wantedPet.appendChild(wantedOption);
+        wantedOption.dataset.type = pet.type;
+        wantedOption.dataset.collection =
+            pet.collection;
+
+        wantedPet.appendChild(
+            wantedOption
+        );
     });
+
+
+    renderMultiPetGrid();
+
+    showPetPreview(
+        wantedPetPreview,
+        ""
+    );
 }
 
 
@@ -1842,65 +2292,48 @@ function updatePetOptions() {
 // 更新「我想要」的禁用選項
 function updateWantedPetDisabled() {
 
-    const ownedPetId = ownedPet.value;
+    const selectedOwnedIds =
+        tempSelectedPets.map(
+            pet => pet.id
+        );
 
-    Array.from(wantedPet.options).forEach(option => {
 
-        // 第一個提示選項不處理
+    Array.from(
+        wantedPet.options
+    ).forEach(option => {
+
         if (!option.value) {
             return;
         }
 
-        option.disabled = option.value === ownedPetId;
+        option.disabled =
+            selectedOwnedIds.includes(
+                option.value
+            );
     });
 
-    // 如果兩邊剛好已經選到同一隻
-    if (wantedPet.value === ownedPetId) {
+
+    // 如果「我想要」剛好已經選了
+    // 現在新增到「我有」的萌寵
+    if (
+        selectedOwnedIds.includes(
+            wantedPet.value
+        )
+    ) {
+
         wantedPet.value = "";
+
+        showPetPreview(
+            wantedPetPreview,
+            ""
+        );
     }
 }
 
-
-// 更新「我有」的禁用選項
-function updateOwnedPetDisabled() {
-
-    const wantedPetId = wantedPet.value;
-
-    Array.from(ownedPet.options).forEach(option => {
-
-        if (!option.value) {
-            return;
-        }
-
-        option.disabled = option.value === wantedPetId;
-    });
-
-    // 如果兩邊剛好已經選到同一隻
-    if (ownedPet.value === wantedPetId) {
-        ownedPet.value = "";
-    }
-}
-
-//監聽抓
-ownedPet.addEventListener("change", function () {
-
-    // 防止選到相同萌寵
-    updateWantedPetDisabled();
-
-    // 顯示我有的萌寵
-    showPetPreview(
-        ownedPetPreview,
-        ownedPet.value
-    );
-});
 
 
 wantedPet.addEventListener("change", function () {
 
-    // 防止選到相同萌寵
-    updateOwnedPetDisabled();
-
-    // 顯示我想要的萌寵
     showPetPreview(
         wantedPetPreview,
         wantedPet.value
@@ -1908,9 +2341,20 @@ wantedPet.addEventListener("change", function () {
 });
 
 //監聽器
-petType.addEventListener("change", updatePetOptions);
+petType.addEventListener("change", function () {
 
-petCollection.addEventListener("change", updatePetOptions);
+    updatePetOptions();
+
+    resetOwnedPetSelection();
+});
+
+
+petCollection.addEventListener("change", function () {
+
+    updatePetOptions();
+
+    resetOwnedPetSelection();
+});
 
 
 // =========================
@@ -1926,19 +2370,28 @@ const cancelPublish = document.getElementById("cancelPublish");
 
 // 開啟發布表單
 function openPublishModal() {
-    // 每次開啟發布表單時重設內容
+
+    // 重設表單
     document.getElementById("publishForm").reset();
 
-    // 重設萌寵選單
-    ownedPet.innerHTML =
-        '<option value="">請先選擇類型與款式</option>';
+    // 清空「我有」多選
+    tempSelectedPets = [];
+    multiPetCount.textContent = "0";
 
+    // 重設我想要
     wantedPet.innerHTML =
         '<option value="">請先選擇類型與款式</option>';
 
-    showPetPreview(ownedPetPreview, "");
-    showPetPreview(wantedPetPreview, "");
-    // 顯示 Modal
+    // 重新顯示左側提示
+    renderMultiPetGrid();
+
+    // 清空右側預覽
+    showPetPreview(
+        wantedPetPreview,
+        ""
+    );
+
+    // 顯示發布 Modal
     publishModal.classList.add("show");
 }
 
